@@ -1,0 +1,62 @@
+name: Import packaged STM32 Skills
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/import/READY"
+
+permissions:
+  contents: write
+
+jobs:
+  unpack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+
+      - name: Reassemble and safely extract Skill files
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .github/import/part-*.b64 | base64 --decode > /tmp/stm32-skills.tar.xz
+          python3 - <<'PY'
+          import tarfile
+          from pathlib import PurePosixPath
+
+          archive_path = "/tmp/stm32-skills.tar.xz"
+          with tarfile.open(archive_path, "r:xz") as archive:
+              members = archive.getmembers()
+              if not members:
+                  raise SystemExit("Archive is empty")
+              for member in members:
+                  path = PurePosixPath(member.name)
+                  if path.is_absolute() or ".." in path.parts:
+                      raise SystemExit(f"Unsafe archive path: {member.name}")
+                  if not str(path).startswith(".agents/skills/"):
+                      raise SystemExit(f"Unexpected archive path: {member.name}")
+                  if not (member.isfile() or member.isdir()):
+                      raise SystemExit(f"Unsupported archive member: {member.name}")
+              archive.extractall(".", members=members, filter="data")
+          PY
+          test -f .agents/skills/stm32-project/SKILL.md
+          test -f .agents/skills/stm32-peripheral/SKILL.md
+          test -f .agents/skills/stm32-firmware/SKILL.md
+          test "$(find .agents/skills -type f | wc -l)" -eq 26
+
+      - name: Commit unpacked Skill source
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf .github/import
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .agents/skills
+          git add -A .github/import
+          git commit -m "feat: publish unpacked STM32 Skills v1.1"
+          git push origin main
