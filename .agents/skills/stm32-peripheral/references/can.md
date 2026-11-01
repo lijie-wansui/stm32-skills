@@ -40,11 +40,11 @@ MCU 的 CAN 外设不能直接连接 CANH/CANL，除非芯片本身明确集成�
 
 对 bxCAN，常见位时间关系为：
 
-```math
+\[
 f_{\mathrm{bit}} =
 \frac{f_{\mathrm{CAN}}}
 {\mathrm{Prescaler}\,(1+\mathrm{BS1}+\mathrm{BS2})}
-```
+\]
 
 还需检查 Sync Segment、SJW、采样点和传播延迟余量。具体参数的寄存器编码和 HAL 字段含义，以当前 HAL 与 Reference Manual 为准。
 

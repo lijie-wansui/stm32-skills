@@ -19,7 +19,7 @@
 - DMA Circular：连续数据流。
 - IDLE/Receive-to-Idle：适合不定长数据，但必须确认当前 HAL 版本是否提供对应 API 和回调。
 
-不要假设 F1、F4、G4 的 HAL 都支持同名 Receive-to-Idle API。先查当前工程 ``stm32xx_hal_uart.h/.c``。
+不要假设 F1、F4、G4 的 HAL 都支持同名 Receive-to-Idle API。先查当前工程 `stm32xx_hal_uart.h/.c`。
 
 ### 数据处理
 - 明确帧边界：固定长度、长度字段、分隔符、空闲间隔或协议状态机。

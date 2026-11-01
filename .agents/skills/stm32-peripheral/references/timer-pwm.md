@@ -34,19 +34,19 @@
 对边沿对齐向上计数，常用关系为：
 
 \[
-f_{\\mathrm{PWM}}=\\frac{f_{\\mathrm{TIM}}}{(PSC+1)(ARR+1)}
+f_{\mathrm{PWM}}=\frac{f_{\mathrm{TIM}}}{(PSC+1)(ARR+1)}
 \]
 
 对中心对齐计数，常见周期关系为：
 
 \[
-f_{\\mathrm{PWM}}\\approx\\frac{f_{\\mathrm{TIM}}}{2(PSC+1)ARR}
+f_{\mathrm{PWM}}\approx\frac{f_{\mathrm{TIM}}}{2(PSC+1)ARR}
 \]
 
 实际计数边界、更新事件和计数模式应以目标 MCU Reference Manual 为准。特别是中心对齐模式下，不要把边沿对齐公式原样套用。
 
 计算时：
-- 明确 ``PSC``、``ARR`` 是寄存器值还是 CubeMX 显示值。
+- 明确 `PSC`、`ARR` 是寄存器值还是 CubeMX 显示值。
 - 明确目标频率和定时器输入时钟。
 - 计算后用实际生成参数反算频率。
 - 注意计数器位宽和 ARR 范围。
